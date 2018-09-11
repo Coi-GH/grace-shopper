@@ -3,10 +3,27 @@ const Sequelize = require('sequelize')
 const db = require('../db')
 
 const User = db.define('user', {
+  firstName: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  lastName: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
   email: {
     type: Sequelize.STRING,
     unique: true,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isEmail: true
+    }
   },
   password: {
     type: Sequelize.STRING,
@@ -24,12 +41,41 @@ const User = db.define('user', {
       return () => this.getDataValue('salt')
     }
   },
-  googleId: {
-    type: Sequelize.STRING
+  billingAddress: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  shippingAddress: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  },
+  userType: {
+    type: Sequelize.ENUM('admin', 'user', 'guest'),
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   }
 })
 
-module.exports = User
+/*
+googleId: {
+    type: Sequelize.STRING
+  }
+salt: {
+  type: Sequelize.STRING,
+  // Making `.salt` act like a function hides it when serializing to JSON.
+  // This is a hack to get around Sequelize's lack of a "private" option.
+  get() {
+    return () => this.getDataValue('salt')
+  }
+}, */
 
 /**
  * instanceMethods
@@ -65,3 +111,6 @@ const setSaltAndPassword = user => {
 
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
+
+
+module.exports = User
