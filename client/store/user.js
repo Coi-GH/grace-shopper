@@ -6,17 +6,35 @@ import history from '../history'
  */
 const GET_USER = 'GET_USER'
 const REMOVE_USER = 'REMOVE_USER'
+const ALL_USERS = 'ALL_USERS'
+const SELECTED_USER = 'SELECTED_USER'
 
 /**
  * INITIAL STATE
  */
-const defaultUser = {}
+const initialState= {
+  currentUser: {},
+  allUsers: [],
+  selectedUser: {}
+}
 
 /**
  * ACTION CREATORS
  */
-const getUser = user => ({type: GET_USER, user})
+const getUser = currentUser => ({type: GET_USER, currentUser})
 const removeUser = () => ({type: REMOVE_USER})
+const setAllUsers = (allUsers) => {
+  return {
+    type: ALL_USERS,
+    allUsers
+  }
+}
+const setSingleUser = (selectedUser) =>{
+  return {
+    type: SELECTED_USER,
+    selectedUser
+  }
+}
 
 /**
  * THUNK CREATORS
@@ -24,16 +42,32 @@ const removeUser = () => ({type: REMOVE_USER})
 export const me = () => async dispatch => {
   try {
     const res = await axios.get('/auth/me')
-    dispatch(getUser(res.data || defaultUser))
+    dispatch(getUser(res.data || {}))
   } catch (err) {
     console.error(err)
   }
 }
 
-export const auth = (email, password, method) => async dispatch => {
+export const logInUser = (email, password) => async dispatch => {
   let res
   try {
-    res = await axios.post(`/auth/${method}`, {email, password})
+    res = await axios.post('/auth/login', {email, password})
+  } catch (authError) {
+    return dispatch(getUser({error: authError}))
+  }
+
+  try {
+    dispatch(getUser(res.data))
+    history.push('/home')
+  } catch (dispatchOrHistoryErr) {
+    console.error(dispatchOrHistoryErr)
+  }
+}
+
+export const signUpUser = (firstName, lastName, email, password, billingAddress, shippingAddress) => async dispatch => {
+  let res
+  try {
+    res = await axios.post('/auth/signup', {firstName, lastName, email, password, billingAddress, shippingAddress})
   } catch (authError) {
     return dispatch(getUser({error: authError}))
   }
@@ -56,15 +90,36 @@ export const logout = () => async dispatch => {
   }
 }
 
+export const fetchAllUsers = () => {
+  return async dispatch => {
+    const {data} = await axios.get('/api/users')
+    dispatch(setAllUsers(data))
+  }
+}
+
+export const fetchSingleUser = (id) => {
+  return async dispatch => {
+    const {data} = await axios.get(`/api/users/${id}`)
+    dispatch(setSingleUser(data))
+  }
+}
+
 /**
  * REDUCER
  */
-export default function(state = defaultUser, action) {
+export default function(state = initialState, action) {
+  const selectedUser = action.selectedUser
+  const allUsers = action.allUsers
+  const currentUser = action.currentUser
   switch (action.type) {
     case GET_USER:
-      return action.user
+      return {...state, currentUser}
     case REMOVE_USER:
-      return defaultUser
+      return {...state, currentUser: {}}
+    case ALL_USERS:
+      return {...state, allUsers}
+    case SELECTED_USER:
+      return {...state, selectedUser}
     default:
       return state
   }

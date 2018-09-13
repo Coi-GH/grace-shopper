@@ -66,7 +66,7 @@ async function seed() {
   // Seeding products
   const malmdesk = await Product.create({
     name: 'MALM Desk',
-    price: 179,
+    price: 17900,
     image: 'https://www.ikea.com/us/en/images/products/malm-desk-brown__0133380_PE288797_S4.JPG',
     description: `A clean design that’s just as beautiful on all sides – place it free-standing in the room or against a wall with cables neatly hidden inside. Use with other MALM products in the series for a unified look.`,
     quantity: 10
@@ -76,7 +76,7 @@ async function seed() {
 
   const martinchair = await Product.create({
     name: 'MARTIN Chair',
-    price: 19,
+    price: 1900,
     image: 'https://www.ikea.com/us/en/images/products/martin-chair-black__0518606_PE641097_S4.JPG',
     description: `You can stack the chairs, so they take less space when you're not using them.
     The self-adjusting plastic feet adds stability to the chair.`,
@@ -87,7 +87,7 @@ async function seed() {
 
   const teochair = await Product.create({
     name: 'TEODORES Chair',
-    price: 25,
+    price: 2500,
     image: 'https://www.ikea.com/us/en/images/products/teodores-chair-white__0517051_PE640574_S4.JPG',
     description: `The chair is easy to store when not in use, since you can stack up to 6 chairs on top of each other. May be completed with FIXA self-adhesive floor protectors to protect the underlying surface against wear.`,
     quantity: 3
@@ -97,7 +97,7 @@ async function seed() {
 
   const neidenbed = await Product.create({
     name: 'NEIDEN Bed',
-    price: 300,
+    price: 30000,
     image: 'https://www.ikea.com/us/en/images/products/neiden-bed-frame__0566814_PE664782_S4.JPG',
     description: `The natural solid wood is beautiful as it is or you can make it more personal by staining, painting or waxing it. Also, the bed frame is high enough so you can place storage boxes underneath.`,
     quantity: 1
