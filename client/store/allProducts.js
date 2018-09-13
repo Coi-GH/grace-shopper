@@ -2,12 +2,12 @@ import axios from 'axios'
 import history from '../history'
 
 // ACTION TYPES
-const GET_ALL_PRODUCTS = 'GET_ALL_PRODUCTS'
+const SET_ALL_PRODUCTS = 'SET_ALL_PRODUCTS'
 
 // ACTION CREATORS
-const getAllProducts = products => {
+const setAllProducts = products => {
   return {
-    type: GET_ALL_PRODUCTS,
+    type: SET_ALL_PRODUCTS,
     products
   }
 }
@@ -17,14 +17,14 @@ export const fetchAllProducts = () => {
   return async dispatch => {
     const response = await axios.get('/api/products')
     const products = response.data
-    dispatch(getAllProducts(products))
+    dispatch(setAllProducts(products))
   }
 }
 
 // REDUCER
 export default function(state = [], action) {
   switch (action.type) {
-    case GET_ALL_PRODUCTS:
+    case SET_ALL_PRODUCTS:
       return action.products
     default:
       return state

@@ -2,30 +2,61 @@ import axios from 'axios'
 import history from '../history'
 
 // ACTION TYPES
-const GET_PRODUCT = 'GET_PRODUCT'
+const SET_ALL_PRODUCTS = 'SET_ALL_PRODUCTS'
+const SET_PRODUCT = 'SET_PRODUCT'
 
 // ACTION CREATORS
-const getProduct = product => {
+const setAllProducts = products => {
   return {
-    type: GET_PRODUCT,
+    type: SET_ALL_PRODUCTS,
+    products
+  }
+}
+
+const setProduct = product => {
+  return {
+    type: SET_PRODUCT,
     product
   }
 }
 
 // THUNK CREATORS
+export const fetchAllProducts = () => {
+  return async dispatch => {
+    const response = await axios.get('/api/products')
+    const products = response.data
+    dispatch(setAllProducts(products))
+  }
+}
+
 export const fetchProduct = productId => {
   return async dispatch => {
     const response = await axios.get(`/api/products/${productId}`)
     const product = response.data
-    dispatch(getProduct(product))
+    dispatch(setProduct(product))
   }
 }
 
+const initialState = {
+  allProducts: [],
+  selectedProduct: {},
+  filters: [],
+  isLoading: {},
+  isError: {}
+}
 // REDUCER
-export default function(state = {}, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
-    case GET_PRODUCT:
-      return action.product
+    case SET_ALL_PRODUCTS:
+      return {
+        ...state,
+        allProducts: action.products
+      }
+    case SET_PRODUCT:
+      return {
+        ...state,
+        selectedProduct: action.product
+      }
     default:
       return state
   }

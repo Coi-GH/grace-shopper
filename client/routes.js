@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter, Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, UserHome, Cart} from './components'
-import {me} from './store'
+import { Login, Signup, UserHome, Cart } from './components'
+import { me } from './store'
 import allUsers from './components/AllUsers'
 import SingleUser from './components/SingleUser'
-
+import AllProductsContainer from './components/AllProductsContainer'
+import SingleProductContainer from './components/SingleProductContainer'
 
 /**
  * COMPONENT
@@ -23,6 +24,9 @@ class Routes extends Component {
         {/* Routes placed here are available to all visitors */}
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
+        <Route path="/users" component={allUsers} />
+        <Route exact path="/products" component={AllProductsContainer} />
+        <Route path="/products/:productId" component={SingleProductContainer} />
         <Route path="/cart" component={Cart} />
         {isLoggedIn && (
           <Switch>
@@ -67,5 +71,5 @@ export default withRouter(connect(mapState, mapDispatch)(Routes))
  */
 Routes.propTypes = {
   loadInitialData: PropTypes.func.isRequired,
-  isLoggedIn: PropTypes.bool.isRequired,
+  isLoggedIn: PropTypes.bool.isRequired
 }

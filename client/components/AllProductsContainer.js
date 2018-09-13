@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import AllProducts from './AllProducts'
-import { fetchAllProducts } from '../store/allProducts'
+import { fetchAllProducts } from '../store/product'
 
 const mapStateToProps = state => {
   return {
-    products: state.allProducts
+    products: state.product.allProducts
   }
 }
 
