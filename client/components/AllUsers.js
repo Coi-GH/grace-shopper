@@ -28,7 +28,7 @@ class AllUsers extends Component {
       <List>
         { users && isAdmin ?
         users.map(user => (
-          <ListItem component="a" href={"/users/" + user.id} key={user.id}>
+          <ListItem component="a" href={"/users/" + user.id} key={user.id} >
             <ListItemText
               primary={user.firstName + ' ' + user.lastName}
               secondary={user.userType}
