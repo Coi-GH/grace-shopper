@@ -1,6 +1,13 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
 import {updateUserOnServer} from '../store/user'
+import Button from '@material-ui/core/Button';
+import FormControl from '@material-ui/core/FormControl';
+import FormGroup from '@material-ui/core/FormGroup';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import Card from '@material-ui/core/Card';
+import Typography from '@material-ui/core/Typography';
 
 class PasswordReset extends Component {
   constructor () {
@@ -9,36 +16,27 @@ class PasswordReset extends Component {
   }
   handleSubmit(event) {
     event.preventDefault()
-    const new1 = event.target.newpassword1.value
-    const new2 = event.target.newpassword2.value
-    if (new1 === new2) {
-      const newData = {...this.props.currentUser, password: new1, resetPassword: false}
-      this.props.updatePassword(this.props.currentUser.id, newData)
-      this.props.history.push('/home')
-    }
+    const newPassword = event.target.newpassword.value
+    const newData = {...this.props.currentUser, password: newPassword, resetPassword: false}
+    this.props.updatePassword(this.props.currentUser.id, newData)
+    this.props.history.push('/home')
   }
   render () {
     return (
-      <div>
-        <h3>Password reset is required!</h3>
+      <Card style={{width: '40%'}}>
+      <FormGroup style={{margin: "1em"}}>
+        <Typography variant="subheading">
+          Password reset is required!
+        </Typography>
         <form onSubmit={this.handleSubmit}>
-          <div>
-            <label>
-              <small>New Password</small>
-            </label>
-            <input name="newpassword1" type="password" />
-          </div>
-          <div>
-            <label>
-              <small>Confirm New Password</small>
-            </label>
-            <input name="newpassword2" type="password" />
-          </div>
-          <div>
-            <button type="submit">Submit</button>
-          </div>
+          <FormControl>
+            <InputLabel>New Password</InputLabel>
+            <Input name="newpassword" type="password" required />
+          </FormControl>
+          <Button type="submit">Submit</Button>
         </form>
-      </div>
+        </FormGroup>
+      </Card>
     )
   }
 }

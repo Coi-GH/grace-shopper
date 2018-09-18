@@ -194,7 +194,7 @@ async function seed() {
 
   const orders = await Promise.all([
     Order.create({
-      isActive: true,
+      isActive: false,
       orderStatus: 'shipped',
       userId: 1
     }),

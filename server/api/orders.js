@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Order, Product } = require('../db/models')
+const { Order, Product, User } = require('../db/models')
 const { userLoggedIn, getCart, getOrderProduct } = require('./helpers')
 
 //GET routes
@@ -31,7 +31,8 @@ router.get('/user/:userId', (req, res, next) => {
 })
 
 router.get('/:id', (req, res, next) => {
-  Order.findById(req.params.id)
+  Order.findById(req.params.id,
+    {include: [{model: User}, {model: Product}]})
     .then(order => res.status(200).json(order))
     .catch(next)
 })
