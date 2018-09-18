@@ -23,14 +23,18 @@ class AllUsers extends Component {
     this._mounted = false
   }
   render () {
-    let isAdmin, users;
-    if (this.state.currentUser) {
-      users = this.state.allUsers
-      isAdmin = ('admin' === this.state.currentUser.userType)
+    let users;
+    const currentUser = this.state.currentUser
+    if (currentUser) {
+      if(currentUser.userType === 'admin') {
+        users = this.state.allUsers
+      } else {
+        users = this.state.allUsers.filter(user => (user.id === currentUser.id))
+      }
     }
     return (
       <List>
-        { users && isAdmin ?
+        { users ?
         users.map(user => (
           <ListItem component="a" href={"/users/" + user.id} key={user.id} >
             <ListItemText
