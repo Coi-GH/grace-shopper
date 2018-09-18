@@ -70,9 +70,7 @@ class AllOrders extends Component {
 }
 
 const mapStateToProps = state => {
-  return {
-    currentUser: state.user.currentUser
-  }
+  return { currentUser: state.user.currentUser }
 }
 
 const mapDispatchToProps = dispatch => ({
