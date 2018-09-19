@@ -49,14 +49,15 @@ class SingleUser extends Component {
   }
   render() {
     const id = this.props.match.params.id
-    let user, isAdmin
-    if (this.state.selectedUser) {
-      user = this.state.selectedUser
+    const user = this.state.selectedUser
+    let isAdmin, isUser
+    if (user) {
       isAdmin = 'admin' === this.state.currentUser.userType
+      isUser = this.state.currentUser.id === user.id
     }
     const padding = {padding: '0.5em'}
     return (
-      user && isAdmin ?
+      user && (isAdmin || isUser) ?
       <div>
         <Table>
           <TableHead>
@@ -101,16 +102,16 @@ class SingleUser extends Component {
         <Link to="/users">
           <Button variant="outlined">BACK TO LIST</Button>
         </Link>
-        <span style={padding} />
-        <Button variant="outlined" onClick={() => this.update(id)}>UPDATE</Button>
-        <span style={padding} />
-        <Button variant="contained" color="secondary" onClick={() => this.delete(id)}>DELETE</Button>
+        { isAdmin ?
+        <span>
+          <span style={padding} />
+          <Button variant="outlined" onClick={() => this.update(id)}>UPDATE</Button>
+          <span style={padding} />
+          <Button variant="contained" color="secondary" onClick={() => this.delete(id)}>DELETE</Button>
+        </span> : null }
       </div>
       :
-      <div>
-        <p>NOT AVAILABLE</p>
-        <Link to="/users"><Button variant="outlined">BACK TO LIST</Button></Link>
-      </div>
+      <Link to="/users"><Button variant="outlined">BACK TO LIST</Button></Link>
     )
   }
 }
