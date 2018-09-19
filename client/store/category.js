@@ -3,16 +3,25 @@ import history from '../history'
 
 // ACTION TYPES
 const SET_ALL_CATEGORIES = 'SET_ALL_CATEGORIES'
+const SET_SINGLE_CATEGORY = 'SET_SINGLE_CATEGORY'
 const SET_CATEGORY_ITEMS = 'SET_CATEGORY_ITEMS'
 const ADD_CATEGORY = 'ADD_CATEGORY'
 const DELETE_CATEGORY = 'DELETE_CATEGORY'
-const TOGGLE_CATEGORY = 'TOGGLE_CATEGORY'
+const SET_PRODUCT_CATEGORIES = 'SET_PRODUCT_CATEGORIES'
+const SET_LOADING_STATUS = 'SET_LOADING_STATUS'
 
 // ACTION CREATORS
 const setAllCategories = categories => {
   return {
     type: SET_ALL_CATEGORIES,
     categories
+  }
+}
+
+const setSingleCategory = category => {
+  return {
+    type: SET_SINGLE_CATEGORY,
+    category
   }
 }
 
@@ -37,49 +46,96 @@ const deleteCategory = category => {
   }
 }
 
-const toggleCategory = categoryId => {
+const setProductCategories = categories => {
   return {
-    type: TOGGLE_CATEGORY,
-    categoryId
+    type: SET_PRODUCT_CATEGORIES,
+    categories
+  }
+}
+
+export const setLoadingStatus = status => {
+  return {
+    type: SET_LOADING_STATUS,
+    status
   }
 }
 
 // THUNK CREATORS
 export const fetchAllCategories = () => {
   return async dispatch => {
-    const response = await axios.get('/api/categories')
-    const categories = response.data
-    dispatch(setAllCategories(categories))
+    try {
+      dispatch(setLoadingStatus(true))
+      const response = await axios.get('/api/categories')
+      const categories = response.data
+      dispatch(setAllCategories(categories))
+      dispatch(setLoadingStatus(false))
+    } catch (error) {
+      dispatch(setLoadingStatus(false))
+    }
+  }
+}
+
+export const fetchSingleCategory = categoryId => {
+  return async dispatch => {
+    try {
+      dispatch(setLoadingStatus(true))
+      const response = await axios.get(`/api/categories/${categoryId}`)
+      const category = response.data
+      dispatch(setSingleCategory(category))
+      dispatch(setLoadingStatus(false))
+    } catch (error) {
+      dispatch(setLoadingStatus(false))
+    }
   }
 }
 
 export const fetchCategoryItems = categoryId => {
   return async dispatch => {
-    const response = await axios.get(`/api/categories/${categoryId}`)
-    const items = response.data
-    dispatch(setCategoryItems(items))
+    try {
+      dispatch(setLoadingStatus(true))
+      const response = await axios.get(`/api/categories/${categoryId}`)
+      const items = response.data
+      dispatch(setCategoryItems(items))
+      dispatch(setLoadingStatus(false))
+    } catch (error) {
+      dispatch(setLoadingStatus(false))
+    }
   }
 }
 
 export const postCategory = category => {
   return async dispatch => {
-    const response = await axios.post('/api/categories', category)
-    const newCategory = response.data
-    dispatch(addCategory(newCategory))
+    try {
+      dispatch(setLoadingStatus(true))
+      const response = await axios.post('/api/categories', category)
+      const newCategory = response.data
+      dispatch(addCategory(newCategory))
+      dispatch(setLoadingStatus(false))
+    } catch (error) {
+      dispatch(setLoadingStatus(false))
+    }
   }
 }
 
 export const removeCategory = categoryId => {
   return async dispatch => {
-    const response = await axios.delete(`/api/categories/${categoryId}`)
-    const category = response.data
-    dispatch(removeCategory(category))
+    try {
+      dispatch(setLoadingStatus(true))
+      const response = await axios.delete(`/api/categories/${categoryId}`)
+      const category = response.data
+      dispatch(removeCategory(category))
+      dispatch(setLoadingStatus(false))
+    } catch (error) {
+      dispatch(setLoadingStatus(false))
+    }
   }
 }
 
 const initialState = {
   allCategories: [],
-  selectedCategories: []
+  currentCategory: {},
+  selectedCategories: [],
+  isLoading: true
 }
 
 export default function(state = initialState, action) {
@@ -89,19 +145,17 @@ export default function(state = initialState, action) {
         ...state,
         allCategories: action.categories
       }
+    case SET_SINGLE_CATEGORY: {
+      return {
+        ...state,
+        currentCategory: action.category
+      }
+    }
     case SET_CATEGORY_ITEMS:
       return {
         ...state,
         selectedCategories: action.items
       }
-    // or write two different actions - select and unselect? maybe do on front end instead
-    // case TOGGLE_CATEGORY:
-    // let selectedCategories = state.allCategories.map(category => {
-    //   return category.id === action.categoryId
-    //     ? { ...category, bought: !grocery.bought }
-    //     : grocery;
-    // });
-    // return { ...state, selectedCategories };
     case ADD_CATEGORY: {
       return {
         ...state,
@@ -117,6 +171,7 @@ export default function(state = initialState, action) {
           )
         ]
       }
+
     default:
       return state
   }

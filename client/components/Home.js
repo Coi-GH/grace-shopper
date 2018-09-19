@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { logout } from '../store'
 import { withStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
+import { GridListTileBar } from '@material-ui/core'
 
 const styles = theme => ({
   root: {
@@ -30,9 +31,9 @@ class Home extends Component {
     return (
       <div>
         <Grid container spacing={24}>
-          <h1>Welcome</h1>
           <Grid item xs={12}>
-            <img src="banner-image.jpg" />
+            <img src="/images/banner-image.jpg" />
+            <GridListTileBar>hi</GridListTileBar>
           </Grid>
         </Grid>
       </div>

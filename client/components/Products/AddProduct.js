@@ -16,6 +16,7 @@ class AddProduct extends Component {
       categories: [],
       value: 0
     }
+    this.handleClick = this.handleClick.bind(this)
   }
 
   handleChange = prop => event => {
@@ -23,25 +24,21 @@ class AddProduct extends Component {
     this.setState({ [prop]: event.target.value })
   }
 
-  handleSelect = event => {
-    if (event.target.checked) {
-      this.state.categories.push(event.target.value)
-    } else {
-      this.state.categories.filter(
-        category => category.id !== event.target.value
-      )
-    }
+  handleClick() {
+    this.props.addProduct(this.state)
+    this.props.history.push('/manageproducts')
   }
 
   render() {
     return (
       <div>
-        <Typography variant="title">Add a new product</Typography>
         <ProductForm
           product={this.state}
+          titleText="Add Product"
           categories={this.props.categories}
           handleChange={this.handleChange}
           handleSelect={this.handleSelect}
+          handleClick={this.handleClick}
           productAction={this.props.addProduct}
           buttonName="ADD"
         />

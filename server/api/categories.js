@@ -8,14 +8,16 @@ const router = express.Router()
 
 router.get('/', (req, res, next) => {
   Category.findAll({
-    include: [{ model: Product }]
+    include: [{ model: Product, through: 'productcategory' }]
   })
     .then(category => res.status(200).json(category))
     .catch(next)
 })
 
-router.get('/:categoryName', (req, res, next) => {
-  Category.findByCategory(req.params.categoryName)
+router.get('/:categoryId', (req, res, next) => {
+  Category.findById(req.params.categoryId, {
+    include: [{ model: Product, through: 'productcategory' }]
+  })
     .then(products => res.status(200).json(products))
     .catch(next)
 })

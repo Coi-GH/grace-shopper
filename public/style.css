@@ -7,6 +7,14 @@ a {
   color: #000;
 }
 
+a:hover {
+  color: #eb8666;
+}
+
+ul {
+  list-style: none;
+}
+
 label {
   display: block;
 }
@@ -24,6 +32,10 @@ form div {
   height: 55px;
 }
 
+.MuiGridListTileBar-title {
+  font-size: 72px;
+}
+
 .hvr-underline-from-center {
   display: inline-block;
   vertical-align: middle;
@@ -31,6 +43,8 @@ form div {
   transform: perspective(1px) translateZ(0);
   box-shadow: 0 0 1px rgba(0, 0, 0, 0);
   position: relative;
+  background-color: white !important;
+  border-radius: 0 !important;
   overflow: hidden;
 }
 .hvr-underline-from-center:before {

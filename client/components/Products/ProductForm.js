@@ -1,30 +1,27 @@
 import React, { Component } from 'react'
 import { withStyles } from '@material-ui/core/styles'
 import classNames from 'classnames'
-import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 import InputAdornment from '@material-ui/core/InputAdornment'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import FormLabel from '@material-ui/core/FormLabel'
-import FormGroup from '@material-ui/core/FormGroup'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import AppBar from '@material-ui/core/AppBar'
+import Toolbar from '@material-ui/core/Toolbar'
 import Grid from '@material-ui/core/Grid'
-import Dropzone from 'react-dropzone'
+import Chip from '@material-ui/core/Chip'
+import AddIcon from '@material-ui/icons/Add'
 
 const styles = theme => ({
   root: {
     width: '100%',
-    overflowX: 'auto',
+    flexGrow: 1,
     textAlign: 'left'
   },
-  forms: {
-    display: 'flex',
-    flexWrap: 'wrap'
+  bar: {
+    backgroundColor: 'white',
+    boxShadow: 'none',
+    marginBottom: 20
   },
   formControl: {
     margin: theme.spacing.unit,
@@ -37,38 +34,69 @@ const styles = theme => ({
     margin: theme.spacing.unit
   },
   textField: {
-    flexBasis: 50,
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit
   },
-  imageUploader: {
+  quantityPicker: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 100
+  },
+  descriptionField: {
+    height: 300,
     border: 1,
-    minHeight: 30,
-    marginTop: theme.spacing.unit * 2,
-    marginBottom: theme.spacing.unit * 2
+    borderStyle: 'solid'
+  },
+  chip: {
+    margin: theme.spacing.unit
+  },
+  chips: {
+    maxWidth: '30%'
   }
 })
 
-class AddProduct extends Component {
+class ProductForm extends Component {
+  constructor(props) {
+    super(props)
+    this.state = props.categories
+  }
+  handleChipDelete = data => () => {
+    if (data.label === 'React') {
+      alert('Clicked') // eslint-disable-line no-alert
+    }
+  }
+
   render() {
     const { classes } = this.props
     const product = this.props.product
+    const titleText = this.props.titleText
     const handleChange = this.props.handleChange
+    const handleCancel = this.props.handleCancel
     const categories = this.props.categories
     const productAction = this.props.productAction
     const buttonName = this.props.buttonName
-    console.log('prodcut form prop', product)
+    console.log('inside the form', product)
     return (
       product && (
         <div className={classes.root}>
+          <AppBar className={classes.bar} position="static" color="default">
+            <Toolbar>
+              <Button onClick={() => productAction(product)}>
+                {buttonName}
+              </Button>
+              <Button onClick={() => handleCancel()}>Cancel</Button>
+            </Toolbar>
+          </AppBar>
+          <Typography variant="title">{titleText}</Typography>
           <Typography variant="subheading">Product Details</Typography>
-          <Grid container direction="row" justify="center" alignItems="center">
-            <Grid
-              container
-              direction="column"
-              justify="flex-start"
-              alignItems="flex-start"
-            >
+          <Grid
+            container
+            spacing={24}
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+          >
+            <Grid item xs={6}>
               <TextField
                 label="Product Name"
                 id="name"
@@ -91,80 +119,87 @@ class AddProduct extends Component {
               />
               <TextField
                 id="quantity"
+                className={classes.quantityPicker}
                 label="Quantity"
                 name="quantity"
-                className={classNames(classes.margin, classes.textField)}
-                value={product.quantity || 0}
+                required={true}
+                value={product.quantity ? product.quantity : ''}
                 onChange={handleChange('quantity')}
                 type="number"
-                InputLabelProps={{ shrink: true }}
+                inputProps={{ min: 0, max: 1000 }}
                 margin="normal"
               />
-              <FormControl fullWidth className={classes.margin}>
-                <InputLabel htmlFor="description">Description</InputLabel>
-                <Input
-                  multiline={true}
-                  id="description"
-                  className={classNames(classes.margin, classes.textField)}
-                  value={product.description}
-                  onChange={handleChange(product.description)}
-                />
-              </FormControl>
+              <TextField
+                id="description"
+                className={classNames(classes.margin, classes.textField)}
+                label="Product Description"
+                name="description"
+                required={true}
+                value={product.description}
+                onChange={handleChange('description')}
+                multiline={true}
+                variant="filled"
+                helperText="Enter a short description of the product or product details"
+                rows="6"
+              />
             </Grid>
             <Grid
               container
-              direction="column"
+              direction="row"
               justify="flex-start"
               alignItems="stretch"
             >
-              <FormControl component="fieldset" className={classes.formControl}>
-                <FormLabel component="legend">Categories</FormLabel>
-                <FormGroup>
+              {titleText === 'Add Product' ? (
+                <div className={classes.chips}>
                   {categories.map(category => (
-                    <FormControlLabel
+                    <Chip
                       key={category.id}
-                      control={
-                        <Checkbox
-                          onChange={() => handleChange(category.name)}
-                          value={`${category.id}`}
-                        />
-                      }
                       label={category.name}
+                      clickable
+                      className={classes.chip}
+                      variant="outlined"
+                      color="secondary"
+                      onDelete={this.handleChipDelete(category)}
+                      deleteIcon={<AddIcon />}
                     />
                   ))}
-                </FormGroup>
-              </FormControl>
+                </div>
+              ) : (
+                <div>
+                  {categories.map(category => (
+                    <Chip
+                      key={category.id}
+                      label={category.name}
+                      onDelete={this.handleChipDelete(category)}
+                      className={classes.chip}
+                      variant="outlined"
+                      color="secondary"
+                    />
+                  ))}
+                </div>
+              )}
+            </Grid>
+            <Grid item xs={6}>
               <div>
                 <InputLabel htmlFor="images">Product Images</InputLabel>
-                <Dropzone className={classes.imageUploader}>
-                  <Typography variant="body2">
-                    Drop files or click here to upload
-                  </Typography>
-                </Dropzone>
+                <TextField
+                  label="Image URL"
+                  id="image-url"
+                  className={classNames(classes.margin, classes.textField)}
+                  value={product.image}
+                  onChange={handleChange('image')}
+                />
+                <div>
+                  <Typography variant="body2">Preview</Typography>
+                  <img src={product.image} />
+                </div>
               </div>
             </Grid>
           </Grid>
-          {this.props.buttonName === 'UPDATE' ? (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => productAction(product.id, product)}
-            >
-              {buttonName}
-            </Button>
-          ) : (
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => productAction(product)}
-            >
-              {buttonName}
-            </Button>
-          )}
         </div>
       )
     )
   }
 }
 
-export default withStyles(styles, { withTheme: true })(AddProduct)
+export default withStyles(styles, { withTheme: true })(ProductForm)

@@ -1,30 +1,31 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { withStyles } from '@material-ui/core/styles'
 import { fetchProduct, editProduct, removeProduct } from '../../store/product'
+import { toggleCategory } from '../../store/category'
 import ProductForm from './ProductForm'
-import store from '../../store'
-import TextField from '@material-ui/core/TextField'
-import MenuItem from '@material-ui/core/MenuItem'
-import FormControl from '@material-ui/core/FormControl'
-import Input from '@material-ui/core/Input'
-import InputLabel from '@material-ui/core/InputLabel'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import SwipeableViews from 'react-swipeable-views'
-import AppBar from '@material-ui/core/AppBar'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 class EditProduct extends Component {
   constructor(props) {
     super(props)
-    this.state = this.props.location.state.product
+    this.state = this.props.selectedProduct
+
+    this.handleUpdate = this.handleUpdate.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
+    this.handleCategories = this.handleCategories.bind(this)
   }
 
   componentDidMount() {
-    // set state with the product
-    this.props.loadSingleProduct(this.props.match.params.id)
+    this.props.loadSingleProduct(this.props.match.params.productId)
+    this.setState(this.props.selectedProduct)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.selectedProduct.id !== prevProps.selectedProduct.id) {
+      this.setState(this.props.selectedProduct)
+    }
   }
 
   handleChange = prop => event => {
@@ -32,41 +33,73 @@ class EditProduct extends Component {
     this.setState({ ...currentState, [prop]: event.target.value })
   }
 
-  render() {
-    const { classes, theme } = this.props
-    console.log('passed prop trough link', this.props.location.state)
-    console.log('thisis the state', this.state)
+  handleUpdate(productData) {
+    this.props.updateProduct(productData)
+    if (!this.props.isLoading) {
+      this.props.history.push('/manageproducts')
+    }
+  }
+
+  handleDelete(productId) {
+    this.props.deleteProduct(productId)
+    if (!this.props.isLoading) {
+      this.props.history.push('/manageproducts')
+    }
+  }
+
+  handleCancel() {
+    this.props.history.push('/manageproducts')
+  }
+
+  handleCategories(event) {
     const product = this.state.product
-    const deleteProduct = this.props.deleteProduct
-    console.log('state', this.state)
-    return (
-      product && (
-        <div>
-          <Typography variant="title">Edit Product</Typography>
-          <ProductForm
-            product={product}
-            categories={this.props.categories}
-            handleChange={this.handleChange}
-            handleSelect={this.handleSelect}
-            productAction={this.props.updateProduct}
-            buttonName="UPDATE"
-          />
-          <Button
-            variant="contained"
-            color="red"
-            onClick={() => deleteProduct(product.id)}
-          >
-            DELETE PRODUCT
-          </Button>
-        </div>
-      )
+    const categoryId = event.target.value
+    const filteredCategory = this.state.checkedCategories.filter(
+      category => category.id === categoryId
+    )[0]
+    const checked = !filteredCategory.checked
+    filteredCategory.checked = !filteredCategory.checked
+    if (checked) {
+      product.categories.push(filteredCategory)
+    } else {
+      product.categories.splice(product.categories.indexOf(filteredCategory))
+    }
+    this.setState({ product: product })
+  }
+
+  render() {
+    const product = this.state
+    return this.props.isLoading || this.state.id === 0 ? (
+      <CircularProgress size={200} />
+    ) : (
+      <div>
+        <ProductForm
+          product={product}
+          titleText="Edit Product"
+          categories={this.props.selectedCategories}
+          handleChange={this.handleChange}
+          handleCategories={this.updateCategories}
+          handleCancel={this.handleCancel}
+          productAction={this.handleUpdate}
+          buttonName="UPDATE"
+        />
+        <Button
+          variant="contained"
+          onClick={() => this.handleDelete(product.id)}
+        >
+          DELETE PRODUCT
+        </Button>
+      </div>
     )
   }
 }
 
 const mapStateToProps = state => {
   return {
-    categories: state.category.allCategories
+    selectedProduct: state.product.selectedProduct,
+    selectedCategories: state.product.selectedCategories,
+    categories: state.category.allCategories,
+    isLoading: state.product.isLoading
   }
 }
 
@@ -76,10 +109,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     loadSingleProduct: () => {
       dispatch(fetchProduct(productId))
     },
-    updateProduct: (id, data) => {
-      dispatch(editProduct(id, data))
+    toggleCategory: categoryId => {
+      dispatch(toggleCategory(categoryId))
     },
-    deleteProduct: id => dispatch(removeProduct(id))
+    updateProduct: data => {
+      dispatch(editProduct(productId, data))
+    },
+    deleteProduct: () => dispatch(removeProduct(productId))
   }
 }
 

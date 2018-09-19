@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid'
 import GridList from '@material-ui/core/GridList'
 import GridListTile from '@material-ui/core/GridListTile'
 import Typography from '@material-ui/core/Typography'
+
 import { withStyles } from '@material-ui/core/styles'
 
 const styles = theme => ({
@@ -31,6 +32,10 @@ const styles = theme => ({
     marginTop: 30,
     borderWidth: 1,
     borderStyle: 'solid'
+  },
+  titleText: {
+    color: '#000',
+    fontWeight: 'bolder'
   }
 })
 
@@ -48,7 +53,9 @@ class AllProducts extends Component {
           <div>
             <Grid container spacing={24}>
               <Grid className={classes.heading} item xs={12}>
-                <Typography variant="display2">Products</Typography>
+                <Typography className={classes.titleText} variant="display2">
+                  Products
+                </Typography>
                 <div className={classes.caption}>
                   <Typography variant="body2">
                     Get inspired and find products for your home. We have a huge
