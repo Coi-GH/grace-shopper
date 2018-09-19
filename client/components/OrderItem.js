@@ -27,9 +27,12 @@ class OrderItem extends React.Component {
   }
 
   handleChange(event) {
-    this.setState({
-      quantity: Number(event.target.value)
-    })
+    const val = Number(event.target.value)
+    if (!Number.isNaN(val)) {
+      this.setState({
+        quantity: Number(event.target.value)
+      })
+    }
   }
 
   componentDidMount() {

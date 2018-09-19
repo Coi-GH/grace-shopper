@@ -140,6 +140,7 @@ export const makePayment = paymentInfo => {
       await axios.put('api/orders/cart/deactivate', {
         cartId: paymentInfo.cartId
       })
+      dispatch(setCart())
     } catch (error) {
       console.error(error)
     }

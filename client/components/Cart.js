@@ -37,10 +37,6 @@ class Cart extends Component {
     })
   }
 
-  componentDidMount() {
-    this.props.fetchCart()
-  }
-
   render() {
     if (this.props.errorHappened) {
       return (
@@ -55,10 +51,10 @@ class Cart extends Component {
     }
 
     const { products } = this.props.cart
-
+    const checkoutShouldBeAvailable = !(this.props.subtotal === 0) && !this.props.checkout
     return (
       <div>
-        {this.props.isLoading || (!this.props.cart.products) ? (
+        {this.props.isLoading || !products ? (
           <CircularProgress size={200} />
         ) : (
           <div>
@@ -79,7 +75,7 @@ class Cart extends Component {
                   )
                   .toLocaleString()}`}
               </Typography>
-            {!this.props.heckout &&
+            {checkoutShouldBeAvailable &&
             <Button size="large" variant="outlined" onClick={this.handleCheckout}>
               <Typography variant="headline">
                 Checkout
@@ -98,7 +94,8 @@ const mapState = state => {
     cart: state.cart.cartData,
     userId: state.user.currentUser.id,
     isLoading: state.cart.isLoading,
-    errorHappened: state.cart.errorHappened
+    errorHappened: state.cart.errorHappened,
+    subtotal: state.cart.subtotal
   }
 }
 
