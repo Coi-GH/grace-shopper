@@ -1,11 +1,20 @@
 const router = require('express').Router()
-const {User} = require('../db/models')
+const { User } = require('../db/models')
 module.exports = router
 
 router.get('/', async (req, res, next) => {
   try {
     const users = await User.findAll({
-      attributes: ['id', 'firstName', 'lastName', 'email', 'billingAddress', 'shippingAddress', 'userType', 'resetPassword']
+      attributes: [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'billingAddress',
+        'shippingAddress',
+        'userType',
+        'resetPassword'
+      ]
     })
     res.json(users)
   } catch (err) {
@@ -16,7 +25,16 @@ router.get('/', async (req, res, next) => {
 router.get('/:id', async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id, {
-      attributes: ['id', 'firstName', 'lastName', 'email', 'billingAddress', 'shippingAddress', 'userType', 'resetPassword']
+      attributes: [
+        'id',
+        'firstName',
+        'lastName',
+        'email',
+        'billingAddress',
+        'shippingAddress',
+        'userType',
+        'resetPassword'
+      ]
     })
     res.json(user)
   } catch (err) {
@@ -26,10 +44,10 @@ router.get('/:id', async (req, res, next) => {
 
 router.delete('/:id', async (req, res, next) => {
   try {
-    await User.destroy({where: {id: req.params.id}})
+    await User.destroy({ where: { id: req.params.id } })
     res.json(req.params.id)
   } catch (err) {
-   next(err)
+    next(err)
   }
 })
 

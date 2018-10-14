@@ -24,6 +24,10 @@ nav a {
   margin: 1em;
 }
 
+#adtarget img {
+  width: 100%;
+}
+
 form div {
   display: inline-block;
 }

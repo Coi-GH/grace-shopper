@@ -59,23 +59,23 @@ class ProductGridList extends Component {
             ? products.map(product => (
                 <GridListTile className={classes.productTile} key={product.id}>
                   <img src={product.image} alt={product.name} />
-                  <Link to={`products/${product.id}`}>
+                  <a href={`products/${product.id}`}>
                     <GridListTileBar
                       title={product.name}
-                      subtitle={<span>${product.price/100}</span>}
+                      subtitle={<span>${product.price / 100}</span>}
                     />
-                  </Link>
+                  </a>
                 </GridListTile>
               ))
             : this.state.products.map(product => (
                 <GridListTile key={product.id}>
                   <img src={product.image} alt={product.name} />
-                  <Link to={`products/${product.id}`}>
+                  <a href={`products/${product.id}`}>
                     <GridListTileBar
                       title={product.name}
-                      subtitle={<span>${product.price/100}</span>}
+                      subtitle={<span>${product.price / 100}</span>}
                     />
-                  </Link>
+                  </a>
                 </GridListTile>
               ))}
         </GridList>

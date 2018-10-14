@@ -39,7 +39,7 @@ class AddProduct extends Component {
           handleChange={this.handleChange}
           handleSelect={this.handleSelect}
           handleClick={this.handleClick}
-          productAction={this.props.addProduct}
+          productAction={this.handleClick}
           buttonName="ADD"
         />
       </div>

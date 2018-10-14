@@ -159,7 +159,6 @@ class ProductForm extends Component {
                       className={classes.chip}
                       variant="outlined"
                       color="secondary"
-                      onDelete={this.handleChipDelete(category)}
                       deleteIcon={<AddIcon />}
                     />
                   ))}
@@ -170,7 +169,6 @@ class ProductForm extends Component {
                     <Chip
                       key={category.id}
                       label={category.name}
-                      onDelete={this.handleChipDelete(category)}
                       className={classes.chip}
                       variant="outlined"
                       color="secondary"
