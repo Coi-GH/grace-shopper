@@ -11,7 +11,7 @@ router.get('/cart', async (req, res, next) => {
         userId: req.session.passport.user,
         isActive: true
       },
-      include: [{model: Product}]
+      include: [{ model: Product }]
     })
     const cart = response[0]
     res.status(200).json(cart)
@@ -26,15 +26,16 @@ router.get('/user/:userId', (req, res, next) => {
     where: {
       userId: req.params.userId
     },
-    include: [{all: true}]
+    include: [{ all: true }]
   })
     .then(orders => res.status(200).json(orders))
     .catch(next)
 })
 
 router.get('/:id', (req, res, next) => {
-  Order.findById(req.params.id,
-    {include: [{model: User}, {model: Product}]})
+  Order.findById(req.params.id, {
+    include: [{ model: User }, { model: Product }]
+  })
     .then(order => res.status(200).json(order))
     .catch(next)
 })
@@ -43,7 +44,7 @@ router.get('/:id', (req, res, next) => {
 //TODO:  Restrict access to admin users
 router.get('/', (req, res, next) => {
   Order.findAll({
-    include: [{all: true}]
+    include: [{ all: true }]
   })
     .then(orders => {
       return res.status(200).json(orders)
@@ -64,9 +65,14 @@ router.post('/cart', async (req, res, next) => {
           quantity: orderProduct.quantity + quantity
         })
         const updatedProduct = await Order.findById(cart.id, {
-          include: [{model: Product, where: {
-            id: productId
-          }}]
+          include: [
+            {
+              model: Product,
+              where: {
+                id: productId
+              }
+            }
+          ]
         })
         res.json(updatedProduct.products[0])
       }
@@ -81,13 +87,13 @@ router.put('/cart/updateItems', async (req, res, next) => {
   try {
     const { cartId, productId, quantity } = req.body
     if (userLoggedIn(req)) {
-        const orderProduct = await getOrderProduct(productId, cartId)
-        const updatedOrder = await orderProduct.update({
-          quantity: quantity
-        })
-        res.json(updatedOrder)
-      }
-    } catch (error) {
+      const orderProduct = await getOrderProduct(productId, cartId)
+      const updatedOrder = await orderProduct.update({
+        quantity: quantity
+      })
+      res.json(updatedOrder)
+    }
+  } catch (error) {
     res.send(error)
   }
 })
@@ -96,7 +102,7 @@ router.put('/cart/deactivate', async (req, res, next) => {
   try {
     const { cartId } = req.body
     const cart = await Order.findById(cartId)
-    const deactivatedOrder =  await cart.update({
+    const deactivatedOrder = await cart.update({
       isActive: false
     })
     console.log('deactivatedOrder', deactivatedOrder)

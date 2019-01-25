@@ -23,6 +23,10 @@ class Cart extends Component {
     this.handleCheckout = this.handleCheckout.bind(this)
   }
 
+  componentDidMount() {
+    this.props.fetchCart()
+  }
+
   handleSubmit(updatedItemInfo) {
     if (updatedItemInfo.quantity > 0) {
       this.props.updateCartItemQuantity(updatedItemInfo)
